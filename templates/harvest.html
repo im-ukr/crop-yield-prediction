@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Yield Prediction</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap");
+    :root {
+      --white-color: hsl(0,0%,100%);
+      --black-color: hsl(0, 0% , 0%);
+      --body-font: "Poppins", sans-serif;
+      --h1-font-size: 1.75rem;
+      --normal-font-size: 1rem;
+      --small-font-size: .813rem;
+      --font-medium: 500;
+    }
+
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+
+    body,
+    input,
+    button,
+    select {
+      font-size: var(--normal-font-size);
+      font-family: var(--body-font);
+    }
+
+    body {
+      color: var(--white-color);
+    }
+
+    input,
+    button,
+    select {
+      border: none;
+      outline: none;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      color: var(--white-color);
+      font-size: 1.2rem;
+      padding: 8px 16px;
+      border: 1px solid var(--white-color);
+      border-radius: 4px;
+      background-color: transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .back-button:hover {
+      background-color: rgba(45, 44, 44, 0.5);
+    }
+
+    .login {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      align-items: center;
+      padding: 60px 0;
+    }
+
+    .login__img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .login__form {
+      position: relative;
+      background-color: hsla(0, 0%, 10%, 0.1);
+      border: 2px solid var(--white-color);
+      margin-inline: 1.5rem;
+      padding: 2rem 1.5rem;
+      border-radius: 1rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .login__title {
+      text-align: center;
+      font-size: var(--h1-font-size);
+      font-weight: var(--font-medium);
+      margin-bottom: 1.5rem;
+    }
+
+    .login__content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .login__box {
+      flex: 1 1 calc(50% - 0.5rem);
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid var(--white-color);
+      padding: 0.25rem 0;
+    }
+
+    .login__icon {
+      font-size: 1.25rem;
+      margin-right: 0.75rem;
+    }
+
+    .login__input,
+    .login__select {
+      width: 100%;
+      padding-block: 0.6rem;
+      background: none;
+      color: var(--black-color);
+      position: relative;
+      z-index: 1;
+    }
+
+    .login__box-input {
+      position: relative;
+      width: 100%;
+    }
+
+    .login__label {
+      position: absolute;
+      left: 0;
+      top: 10px;
+      font-weight: var(--font-medium);
+      transition: top 0.3s, font-size 0.3s;
+    }
+
+    .login__input:focus + .login__label,
+    .login__input:not(:placeholder-shown) + .login__label,
+    .login__select:focus + .login__label,
+    .login__select:not(:placeholder-shown) + .login__label {
+      top: -12px;
+      font-size: var(--small-font-size);
+    }
+
+    .login__button {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 0.5rem;
+      background-color: var(--white-color);
+      color: var(--black-color);
+      font-weight: var(--font-medium);
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: opacity 0.3s;
+    }
+
+    .login__button:hover {
+      opacity: 0.9;
+    }
+
+    @media screen and (min-width: 576px) {
+      .login {
+        justify-content: center;
+      }
+      .login__form {
+        width: 500px;
+        padding: 2.5rem 2rem;
+        border-radius: 1.5rem;
+      }
+      .login__title {
+        font-size: 2rem;
+      }
+    }
+
+    /* Prediction result styles */
+    #prediction-result {
+      position: relative;
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: hsla(0, 0%, 10%, 0.5);
+      border-radius: 0.5rem;
+      color: white;
+      border: 1px solid white;
+      backdrop-filter: blur(8px);
+      display: none;
+      z-index: 1000;
+      transition:all 0.5s ease;
+    }
+
+    #result-text {
+      padding-right: 1.5rem;
+    }
+
+    .close-result {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: var(--white-color);
+      background: none;
+      border: none;
+      padding: 0 0.5rem;
+      z-index: 1001;
+      pointer-events: auto;
+    }
+
+    .close-result:hover {
+      color: hsl(0, 100%, 70%);
+    }
+
+    /* Input error styling */
+    .input-error {
+      border-bottom: 2px solid #ff0000 !important;
+      animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+    p {
+  color: #252525;
+  position: relative;
+  z-index: 10;
+  letter-spacing: 2px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="login">
+    <a href="{{ url_for('home') }}" class="back-button">← Back</a>
+    <img src="../static/img/img5.jpg" alt="login image" class="login__img">
+
+    <form id="harvest-form" class="login__form">
+      <h1 class="login__title">Crop Yield Prediction</h1>
+
+      <div class="login__content">
+        <!-- Region -->
+        <div class="login__box">
+          <i class="ri-map-pin-line login__icon"></i>
+          <div class="login__box-input">
+            <select required class="login__select" id="region">
+              <option value="South">South</option>
+              <option value="North">North</option>
+              <option value="East">East</option>
+              <option value="West">West</option>
+            </select>
+            <label for="region" class="login__label">Region</label>
+          </div>
+        </div>
+
+        <!-- Soil Type -->
+        <div class="login__box">
+          <i class="ri-landscape-line login__icon"></i>
+          <div class="login__box-input">
+            <select required class="login__select" id="soilType">
+              <option value="Loam">Loam</option>
+              <option value="Clay">Clay</option>
+              <option value="Sandy">Sandy</option>
+              <option value="Silt">Silt</option>
+              <option value="Peaty">Peaty</option>
+              <option value="Chalky">Chalky</option>
+            </select>
+            <label for="soilType" class="login__label">Soil Type</label>
+          </div>
+        </div>
+
+        <!-- Crop -->
+        <div class="login__box">
+          <i class="ri-plant-line login__icon"></i>
+          <div class="login__box-input">
+            <select required class="login__select" id="crop">
+              <option value="Wheat">Wheat</option>
+              <option value="Rice">Rice</option>
+              <option value="Maize">Maize</option>
+              <option value="Barley">Barley</option>
+              <option value="Cotton">Cotton</option>
+              <option value="Soybean">Soybean</option>
+            </select>
+            <label for="crop" class="login__label">Crop</label>
+          </div>
+        </div>
+
+        <!-- Rainfall (mm) -->
+        <div class="login__box">
+          <i class="ri-drop-line login__icon"></i>
+          <div class="login__box-input">
+            <input 
+              type="number" 
+              required 
+              class="login__input" 
+              id="rainfall" 
+              step="0.1"
+              min="0"
+              max="3000"
+              placeholder=" "
+            >
+            <label for="rainfall" class="login__label">Rainfall (mm)</label>
+          </div>
+        </div>
+
+        <!-- Temperature (°C) -->
+        <div class="login__box">
+          <i class="ri-temp-cold-line login__icon"></i>
+          <div class="login__box-input">
+            <input 
+              type="number" 
+              required 
+              class="login__input" 
+              id="temperature" 
+              step="0.1"
+              min="-50"
+              max="60"
+              placeholder=" "
+            >
+            <label for="temperature" class="login__label">Temperature (°C)</label>
+          </div>
+        </div>
+
+        <!-- Fertilizer Used -->
+        <div class="login__box">
+          <i class="ri-flask-line login__icon"></i>
+          <div class="login__box-input">
+            <select required class="login__select" id="fertilizer">
+              <option value=1>Yes</option>
+              <option value=0>No</option>
+            </select>
+            <label for="fertilizer" class="login__label">Fertilizer Used</label>
+          </div>
+        </div>
+
+        <!-- Irrigation Used -->
+        <div class="login__box">
+          <i class="ri-water-flash-line login__icon"></i>
+          <div class="login__box-input">
+            <select required class="login__select" id="irrigation">
+              <option value=1>Yes</option>
+              <option value=0>No</option>
+            </select>
+            <label for="irrigation" class="login__label">Irrigation Used</label>
+          </div>
+        </div>
+
+        <!-- Weather Condition -->
+        <div class="login__box">
+          <i class="ri-sun-line login__icon"></i>
+          <div class="login__box-input">
+            <select required class="login__select" id="weather">
+              <option value="Sunny">Sunny</option>
+              <option value="Rainy">Rainy</option>
+              <option value="Cloudy">Cloudy</option>
+            </select>
+            <label for="weather" class="login__label">Weather Condition</label>
+          </div>
+        </div>
+
+        <!-- Days to Harvest -->
+        <div class="login__box">
+          <i class="ri-calendar-line login__icon"></i>
+          <div class="login__box-input">
+            <input 
+              type="number" 
+              required 
+              class="login__input" 
+              id="daysToHarvest" 
+              min="1"
+              max="365"
+              placeholder=" "
+            >
+            <label for="daysToHarvest" class="login__label">Days to Harvest</label>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="login__button">Predict</button>
+
+      <div id="prediction-result">
+        <button class="close-result" aria-label="Close result">&times;</button>
+        <p id="result-text"></p>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("harvest-form");
+      const resultDiv = document.getElementById("prediction-result");
+      const resultText = document.getElementById("result-text");
+      const closeBtn = document.querySelector(".close-result");
+
+      // Close button handler
+      closeBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        resultDiv.style.display = "none";
+        form.reset();
+        document.querySelectorAll(".input-error").forEach(el => {
+          el.classList.remove("input-error");
+        });
+      });
+
+      // Numeric validation
+      const validateNumber = (id, min, max) => {
+        const input = document.getElementById(id);
+        const value = parseFloat(input.value);
+        if (isNaN(value) || value < min || value > max) {
+          input.classList.add("input-error");
+          return null;
+        }
+        input.classList.remove("input-error");
+        return value;
+      };
+
+      // Form submission
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        resultDiv.style.display = "none";
+
+        // Validate inputs
+        const rainfall = validateNumber("rainfall", 0, 3000);
+        const temperature = validateNumber("temperature", -50, 60);
+        const daysToHarvest = validateNumber("daysToHarvest", 1, 365);
+
+        if ([rainfall, temperature, daysToHarvest].some(v => v === null)) {
+          resultDiv.style.display = "block";
+          resultDiv.style.backgroundColor = "#ff000020";
+          resultText.textContent = "Please check highlighted fields";
+          return;
+        }
+
+        // Prepare data
+        const formData = {
+          region: document.getElementById("region").value,
+          soilType: document.getElementById("soilType").value,
+          crop: document.getElementById("crop").value,
+          rainfall: rainfall,
+          temperature: temperature,
+          fertilizer: document.getElementById("fertilizer").value,
+          irrigation: document.getElementById("irrigation").value,
+          weather: document.getElementById("weather").value,
+          daysToHarvest: daysToHarvest
+        };
+
+        try {
+          resultText.textContent = "Analyzing data...";
+          resultDiv.style.display = "block";
+
+          const response = await fetch("/predict-harvest", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData)
+          });
+
+          const data = await response.json();
+          
+          if (data.error) {
+            resultDiv.style.backgroundColor = "#ff000020";
+            resultText.textContent = `Error: ${data.error}`;
+          } else {
+            resultDiv.style.backgroundColor = "#00ff0020";
+            resultText.textContent = `Predicted Yield: ${data.yield}`;
+          }
+        } catch (error) {
+          resultDiv.style.backgroundColor = "#ff000020";
+          resultText.textContent = "Network error. Please try again.";
+        }
+      });
+    });
+  </script>
+</body>
+</html>

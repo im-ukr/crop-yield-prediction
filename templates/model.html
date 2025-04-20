@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krishi Predict</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script defer src="{{ url_for('static', filename='script.js') }}"></script>
+    <style>
+        body {
+            background: url("{{ url_for('static', filename='img/img4.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem 0;
+            /* Top and bottom padding */
+            display: block;
+            /* Change from flex to block */
+            overflow-y: auto;
+            /* Enable body scrolling */
+        }
+
+        .home__button {
+            position: absolute;
+            top: 3rem;
+            left: 3rem;
+            background-color: hsl(32, 100.00%, 65.90%);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.25rem;
+            color: hsl(212, 40%, 12%);
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .home__button:hover {
+            background-color: hsl(32, 100.00%, 55.90%);
+        }
+
+        .card {
+            margin: 2rem 0;
+            /* Vertical margin */
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 3px solid rgba(0, 183, 255, 0.8);
+            box-shadow: 0px 0px 20px rgba(0, 183, 255, 0.8);
+            transition: 0.3s;
+            /* Remove max-height constraint */
+        }
+
+        .card:hover {
+            box-shadow: 0px 0px 30px rgba(0, 183, 255, 1);
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, rgb(53, 53, 53), rgb(20, 22, 26));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            background: rgba(246, 246, 246, 0.57);
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .form-control:focus {
+            border: 2px solid rgba(0, 183, 255, 0.8);
+            box-shadow: 0px 0px 10px rgba(0, 183, 255, 0.8);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #00e0ff, #0066ff);
+            border: none;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #0066ff, #00e0ff);
+            box-shadow: 0px 0px 15px rgba(0, 183, 255, 1);
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        #download-strategy {
+            background: linear-gradient(90deg, #f3da51, #ffc47b);
+            border: none;
+            font-weight: 600;
+        }
+
+        #download-strategy:hover {
+            background: linear-gradient(90deg, #ffca89, #ffdc17);
+            box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+        }
+
+        .container {
+            margin: 2rem auto;
+            /* Vertical margin */
+            padding: 0 15px;
+            /* Bootstrap default */
+            max-width: 800px;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <a href="{{ url_for('home') }}" class="home__button">Back</a>
+    <div class="container my-3">
+        <div class="card shadow-lg p-4 custom-card mt-2 mb-2">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-center form-title me-2">🌾 Crop Yield Prediction 🌿</h2>
+                <button id="clear-all" class="btn btn-danger">Clear All</button>
+            </div>
+            <form id="prediction-form">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">State Name</label>
+                        <input type="text" class="form-control autocomplete" id="State_Name" list="State_Name-list"
+                            data-url="/autocomplete/state" required>
+                        <datalist id="State_Name-list"></datalist>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">District Name</label>
+                        <input type="text" class="form-control autocomplete" id="District_Name"
+                            list="District_Name-list" data-url="/autocomplete/district" required>
+                        <datalist id="District_Name-list"></datalist>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Season</label>
+                        <input type="text" class="form-control autocomplete" id="Season" list="Season-list"
+                            data-url="/autocomplete/season" required>
+                        <datalist id="Season-list"></datalist>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Crop</label>
+                        <input type="text" class="form-control autocomplete" id="Crop" list="Crop-list"
+                            data-url="/autocomplete/crop" required>
+                        <datalist id="Crop-list"></datalist>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Land Area (Acres)</label>
+                        <input type="number" step="any" class="form-control" id="Area" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Crop Year</label>
+                        <input type="number" class="form-control" id="Crop_Year" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mb-4">Predict</button>
+            </form>
+            <div class="mt-4 alert alert-info" id="prediction-result" style="display: none;"></div>
+            <!-- Add this after the submit button but before the prediction result -->
+            <div class="d-flex justify-content-between align-items-center mt-2">
+                <button type="button" id="download-strategy" class="btn btn-warning mt-3" style="display: none;">
+                    Download Harvest Strategy: <span id="crop-name"></span>
+                </button>
+                <div class="ms-auto"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

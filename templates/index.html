@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   <!--=============== REMIXICONS ===============-->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+
+   <!--=============== CSS ===============-->
+   <link rel="stylesheet" href="../static/css/styles.css">
+
+   <title>Agriware Predict</title>
+</head>
+
+<body>
+   <a href="#" class="home__button">Home</a>
+   <section class="container">
+      <div class="card__content">
+         <article class="card__article">
+            <div class="card__image">
+               <img src="../static/img/img2.jpg" alt="image" class="card__img">
+               <div class="card__shadow"></div>
+            </div>
+
+            <div class="card__data">
+               <h3 class="card__name" style="font-size:2rem">Krishi Predict</h3>
+               <p class="card__description" style="color: rgb(237, 89, 119);">
+                  Smart Crop Prediction for Indian Agriculture
+               </p>
+               <div class="feature">
+                  <h3 style="font-weight: 600;font-family:cursive;color:rgb(159, 149, 240)">Features</h3>
+                  <p>Accuracy: 92.16%</p>
+                  Model: CatBoost
+               </div>
+               <br>
+               <a href="{{ url_for('model_page') }}" class="card__button" id="start1">Start</a>
+            </div>
+         </article>
+
+         <article class="card__article">
+            <div class="card__image">
+               <img src="../static/img/img3.jpg" alt="image" class="card__img">
+               <div class="card__shadow"></div>
+            </div>
+
+            <div class="card__data">
+               <h3 class="card__name" style="font-size:2rem">Harvest Globe</h3>
+               <p class="card__description" style="color: rgb(237, 89, 119);">
+                  Smart Crop Prediction for Worldwide Agriculture
+               </p>
+               <div class="feature">
+                  <h3 style="font-weight: 600;font-family:cursive;color:rgb(159, 149, 240)">Features</h3>
+                  <p>Accuracy: 81.03%</p>
+                  Model: Random Forest
+               </div>
+               <br>
+               <a href="{{ url_for('harvest') }}" class="card__button" id="start2">Start</a>
+            </div>
+         </article>
+      </div>
+   </section>
+</body>
+
+</html>
