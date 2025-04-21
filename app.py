@@ -8,7 +8,7 @@ import os
 import pickle
 import xgboost as xgb
 
-app = Flask(__name__, static_folder="static", template_folder="templates")
+app = Flask(__name__, static_folder="static", template_folder=".")
 
 # ================== Common Data Loading ==================
 df = pd.read_csv("datasets/crop_production.csv")
